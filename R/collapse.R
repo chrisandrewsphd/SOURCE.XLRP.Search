@@ -5,11 +5,11 @@
 #' @return data.frame with variables for mrn, n_positive, n_negative, first date, last date, n dates
 #' @export
 #'
-#' @examples
+#' @examples # keyword2patient()
 keyword2patient <- function(dat_enc_neg) {
   # for each person/date combination,
   # how many non-negated matches are there?
-	posdate <- aggregate(
+	posdate <- stats::aggregate(
 	  NEGATION_COUNT ~ PAT_MRN + CONTACT_DATE,
 	  data = dat_enc_neg,
 	  FUN=function(x) sum(x==0))
@@ -21,21 +21,21 @@ keyword2patient <- function(dat_enc_neg) {
 	# if there are any dates with positives:
 	if (sum(posdate$n_positive>0)) {
 	  # date of first positive mention
-		firstposdate <- aggregate(
+		firstposdate <- stats::aggregate(
 		  CONTACT_DATE ~ PAT_MRN,
 		  data = posdate, subset = n_positive>0,
 		  FUN = function(x) min(x))
 		names(firstposdate)[2] <- "first_dt"
 
 		# date of last positive mention
-		lastposdate  <- aggregate(
+		lastposdate  <- stats::aggregate(
 		  CONTACT_DATE ~ PAT_MRN,
 		  data = posdate, subset = n_positive>0,
 		  FUN = function(x) max(x))
 		names( lastposdate)[2] <- "last_dt"
 
 		# number of dates with positive mention
-		nposdate     <- aggregate(
+		nposdate     <- stats::aggregate(
 		  CONTACT_DATE ~ PAT_MRN,
 		  data = posdate, subset = n_positive>0,
 		  FUN = function(x) length(x))
@@ -55,13 +55,13 @@ keyword2patient <- function(dat_enc_neg) {
 	}
 
 	# count by person (not person/date)
-	posmrn <- aggregate(
+	posmrn <- stats::aggregate(
 	  NEGATION_COUNT ~ PAT_MRN,
 	  data = dat_enc_neg,
 	  FUN = function(x) sum(x==0))
 	names(posmrn)[2] <- "n_positive"
 
-	negmrn <- aggregate(
+	negmrn <- stats::aggregate(
 	  NEGATION_COUNT ~ PAT_MRN,
 	  data = dat_enc_neg,
 	  FUN = function(x) sum(x> 0))
@@ -85,23 +85,23 @@ keyword2patient <- function(dat_enc_neg) {
 #' @return data.frame with variables for mrn token, encounter token, contact date, n_positive, n_negative
 #' @export
 #'
-#' @examples
+#' @examples # keyword2encounter()
 keyword2encounter <- function(dat_enc_neg) {
 	# output includes mrn, csn, date, n_positive, n_negative
 
-	pos <- aggregate(
+	pos <- stats::aggregate(
 	  NEGATION_COUNT ~ PAT_MRN + PAT_ENC_CSN_ID,
 	  data = dat_enc_neg,
 	  FUN = function(x) sum(x==0))
 	names(pos)[3] <- "n_positive"
 
-	neg <- aggregate(
+	neg <- stats::aggregate(
 	  NEGATION_COUNT ~ PAT_MRN + PAT_ENC_CSN_ID,
 	  data = dat_enc_neg,
 	  FUN = function(x) sum(x> 0))
 	names(neg)[3] <- "n_negative"
 
-	date <- aggregate(
+	date <- stats::aggregate(
 	  CONTACT_DATE ~ PAT_MRN + PAT_ENC_CSN_ID,
 	  data = dat_enc_neg,
 	  FUN = function(x) min(x)) # should all be the same for a csn
