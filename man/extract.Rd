@@ -4,7 +4,7 @@
 \alias{extract}
 \title{Extract matching text from progress notes}
 \usage{
-extract(pat, dat_pn, varname_pn = "PROGRESS_NOTE")
+extract(pat, dat_pn, varname_pn = "PROGRESS_NOTE", verbose = 0)
 }
 \arguments{
 \item{pat}{regular expression for which to search}
@@ -12,6 +12,8 @@ extract(pat, dat_pn, varname_pn = "PROGRESS_NOTE")
 \item{dat_pn}{data.table or data.frame containing clinic visit notes}
 
 \item{varname_pn}{name of variable in dat_pn containing the progress note.  Default is "PROGRESS_NOTE".}
+
+\item{verbose}{Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.}
 }
 \value{
 data.frame or data.table (invisibly) with seven columns containing all text matching pattern pat, the position of the matches within the progress note and the associated data for that progress note (encounter, mrn, and id tokens; date)
@@ -20,5 +22,14 @@ data.frame or data.table (invisibly) with seven columns containing all text matc
 Extract matching text from progress notes
 }
 \examples{
-extract("XLRP", dat_pn)
+dat_pn <- data.frame(
+  PAT_MRN = c("A", "B"),
+  PAT_ID = c("ZA", "ZB"),
+  CONTACT_DATE = c("2023-03-01", "2020-03-01"),
+  PAT_ENC_CSN_ID = c("A1", "B1"),
+  PROGRESS_NOTE = c("XLRP uh oh", "No XLRP. Good day."))
+system.time(dat_ext <- extract(
+  pat = "XLRP",
+  dat_pn))
+table(dat_ext$MATCHED_TEXT)
 }
