@@ -15,3 +15,6 @@ data.frame with variables for mrn token, encounter token, contact date, n_positi
 \description{
 Title aggregate collection of keyword data.frame to patient level
 }
+\examples{
+# keyword2encounter()
+}

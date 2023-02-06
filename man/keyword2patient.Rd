@@ -15,3 +15,6 @@ data.frame with variables for mrn, n_positive, n_negative, first date, last date
 \description{
 Title aggregate collection of keyword data.frame to patient level
 }
+\examples{
+# keyword2patient()
+}
