@@ -16,15 +16,11 @@ loadprogressnotes <- function(
     filename,
     verbose = 0,
     usefread = TRUE,
-    skip = 0,
     nrows = -1L) {
-
-  if (isTRUE(usefread))
-  	if (isFALSE(require("data.table", character.only=TRUE))) stop("Install package data.table.")
 
   # read all columns as character
   timing <- system.time(
-    dat <- if (usefread) {
+    dat <- if (isTRUE(usefread)) {
       data.table::fread(
         filename,
         nrows = nrows,
@@ -56,8 +52,8 @@ loadprogressnotes <- function(
 		print(class(dat))
 		print(dim(dat))
 		print(names(dat))
-		print(str(dat))
-		if (verbose > 1) print(head(dat))
+		print(utils::str(dat))
+		if (verbose > 1) print(utils::head(dat))
 	}
 
 	return(invisible(dat))

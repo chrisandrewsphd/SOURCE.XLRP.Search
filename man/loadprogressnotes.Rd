@@ -4,13 +4,7 @@
 \alias{loadprogressnotes}
 \title{Load Progress Notes: This function reads the ENC_VISIT file in preparation for free text search of the progress note.}
 \usage{
-loadprogressnotes(
-  filename,
-  verbose = 0,
-  usefread = TRUE,
-  skip = 0,
-  nrows = -1L
-)
+loadprogressnotes(filename, verbose = 0, usefread = TRUE, nrows = -1L)
 }
 \arguments{
 \item{filename}{Name of encounter visit file.  At UM this is "SOURCE_UM_OPH_ENC_VISIT.csv".  You may wish to include entire path to the file.}
