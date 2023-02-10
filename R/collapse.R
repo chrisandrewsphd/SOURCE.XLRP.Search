@@ -3,7 +3,6 @@
 #' @param dat_enc_neg data.frame
 #'
 #' @return data.frame with variables for mrn, n_positive, n_negative, first date, last date, n dates
-#' @export
 #'
 #' @examples # keyword2patient()
 keyword2patient <- function(dat_enc_neg) {
@@ -83,7 +82,6 @@ keyword2patient <- function(dat_enc_neg) {
 #' @param dat_enc_neg data.frame
 #'
 #' @return data.frame with variables for mrn token, encounter token, contact date, n_positive, n_negative
-#' @export
 #'
 #' @examples # keyword2encounter()
 keyword2encounter <- function(dat_enc_neg) {
