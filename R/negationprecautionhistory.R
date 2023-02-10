@@ -15,7 +15,6 @@
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
 #' @return data.frame of negation terms with information about location.
-#' @export
 #'
 #' @examples # findnegations()
 findnegations <- function(
@@ -55,7 +54,6 @@ findnegations <- function(
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
 #' @return data.frame of precaution terms with information about location.
-#' @export
 #'
 #' @examples # findprecautions()
 findprecautions <- function(
@@ -107,7 +105,6 @@ findprecautions <- function(
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
 #' @return data.frame of history terms with information about location.
-#' @export
 #'
 #' @examples # findhistory()
 findhistory <- function(
@@ -163,6 +160,52 @@ findstringboundaries <- function(
   return(sent_bound)
 }
 
+#' Add sentence information to each instance of found keyword
+#'
+#' @param dat_key data.frame containing instances of keywords
+#' @param sent_bound data.frame containing sentence boundaries
+#' @param dat_pn data.frame ENC_VISIT containing progress notes
+#' @param varname_pn name of PROGRESS_NOTE in dat_pn
+#' @param varname_enc variable name of encounter variable
+#' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
+#'
+#' @return data.frame. Same as dat_key but with additional columns
+#' SENTENCE, SENTENCE_START, and SENTENCE_END.
+#' @export
+#'
+#' @examples # addsentenceinfo(dat_key, sent_bound, dat_pn)
+addsentenceinfo <- function(
+    dat_key,
+    sent_bound,
+    dat_pn,
+    varname_pn = "PROGRESS_NOTE",
+    varname_enc = "PAT_ENC_CSN_ID",
+    verbose = 0) {
+
+  idx_key <- match(dat_key[, varname_enc], dat_pn[, varname_enc])
+
+  # extra variables to add to dat_key
+  dat_key$SENTENCE_START <- NA_integer_
+  dat_key$SENTENCE_END <- NA_integer_
+  dat_key$SENTENCE <- NA_character_
+
+  for (i in seq_along(idx_key)) {
+    # extract sentence from dat_pn$PROGRESS_NOTE containing key word
+    these_sent <- stringi::stri_sub(
+      dat_pn[, varname_pn][idx_key[i]],
+      from = sent_bound[[idx_key[i]]])
+    which_sent <- findInterval(
+      dat_key$POSITION[i],
+      sent_bound[[idx_key[i]]][, 1])
+    dat_key$SENTENCE[i] <- these_sent[which_sent]
+    dat_key$SENTENCE_START[i] <- sent_bound[[idx_key[i]]][which_sent, 1]
+    dat_key$SENTENCE_END[i]   <- sent_bound[[idx_key[i]]][which_sent, 2]
+  }
+
+  return(invisible(dat_key))
+}
+
+
 #' Add negation information to each instance of found keyword
 #'
 #' @param dat_key data.frame containing instances of keywords
@@ -174,7 +217,6 @@ findstringboundaries <- function(
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
 #' @return data.frame
-#' @export
 #'
 #' @examples # addnegationinfo()
 addnegationinfo <- function(
