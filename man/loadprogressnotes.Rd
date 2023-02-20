@@ -4,10 +4,18 @@
 \alias{loadprogressnotes}
 \title{Load Progress Notes: This function reads the ENC_VISIT file in preparation for free text search of the progress note.}
 \usage{
-loadprogressnotes(filename, verbose = 0, usefread = TRUE, nrows = -1L)
+loadprogressnotes(
+  filename,
+  varname_enc_id = "PAT_ENC_CSN_ID",
+  verbose = 0,
+  usefread = TRUE,
+  nrows = NULL
+)
 }
 \arguments{
 \item{filename}{Name of encounter visit file.  At UM this is "SOURCE_UM_OPH_ENC_VISIT.csv".  You may wish to include entire path to the file.}
+
+\item{varname_enc_id}{Name of the encounter id variable filename.  At UM this is "PAT_ENC_CSN_ID" (which is the default if nothing else is provided).}
 
 \item{verbose}{Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.}
 
@@ -16,7 +24,7 @@ loadprogressnotes(filename, verbose = 0, usefread = TRUE, nrows = -1L)
 \item{nrows}{Number of rows to read from file.  Default (-1) is to read all rows.  Consider positive values for testing.}
 }
 \value{
-A data.table (fread == TRUE) or data.frame (fread == FALSE).
+A data.table (fread == TRUE) or data.frame (fread == FALSE), invisibly.
 }
 \description{
 Load Progress Notes: This function reads the ENC_VISIT file in preparation for free text search of the progress note.
