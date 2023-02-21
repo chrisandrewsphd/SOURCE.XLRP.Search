@@ -189,9 +189,9 @@ addsentenceinfo <- function(
     dat_pn[[varname_enc]]) # encounter variable in dat_pn may be supplied by user
 
   # extra variables to add to dat_key
-  dat_key[["SENTENCE_START"]] <- NA_integer_
-  dat_key[["SENTENCE_END"]] <- NA_integer_
-  dat_key[["SENTENCE"]] <- NA_character_
+  dat_key[["SENTENCE_START"]] <- rep(NA_integer_, nrow(dat_key))
+  dat_key[["SENTENCE_END"]] <- rep(NA_integer_, nrow(dat_key))
+  dat_key[["SENTENCE"]] <- rep(NA_character_, nrow(dat_key))
 
   for (i in seq_along(idx_key)) {
     # extract sentence from dat_pn$PROGRESS_NOTE containing key word
