@@ -3,9 +3,13 @@
 #' @param pat regular expression for which to search
 #' @param dat_pn data.table or data.frame containing clinic visit notes
 #' @param varname_pn name of variable in dat_pn containing the progress note.  Default is "PROGRESS_NOTE".
+#' @param varname_enc_id name of variable in dat_pn containing the progress note.  Default is "PAT_ENC_CSN_ID".
+#' @param varname_pat_id name of variable in dat_pn containing the progress note.  Default is "PAT_ID".
+#' @param varname_pat_mrn name of variable in dat_pn containing the progress note.  Default is "PAT_MRN".
+#' @param varname_date name of variable in dat_pn containing the progress note.  Default is "CONTACT_DATE".
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
-#' @return data.frame or data.table (invisibly) with seven columns containing all text matching pattern pat, the position of the matches within the progress note and the associated data for that progress note (encounter, mrn, and id tokens; date)
+#' @return data.frame (invisibly) with seven columns containing all text matching pattern pat, the position of the matches within the progress note and the associated data for that progress note (encounter, mrn, and id tokens; date). The variable names of the output are always "PAT_ENC_CSN_ID", "PAT_ID", "PAT_MRN", "CONTACT_DATE", "MATCHED_TEXT", "POSITION", and "LINE", regardless of the input variable names.
 #' @export
 #'
 #' @examples
@@ -23,17 +27,21 @@ extract <- function(
     pat,
     dat_pn,
     varname_pn = "PROGRESS_NOTE",
+    varname_enc_id = "PAT_ENC_CSN_ID",
+    varname_pat_id = "PAT_ID",
+    varname_pat_mrn = "PAT_MRN",
+    varname_date = "CONTACT_DATE",
     verbose = 0) {
 
   if (verbose > 0) cat("Pattern to search:", pat, "\n")
 
   stime1 <- system.time({
     # determine the locations of the matches within the notes
-    loc <- gregexpr(pat, dat_pn[, varname_pn], ignore.case = TRUE)
+    loc <- gregexpr(pat, dat_pn[[varname_pn]], ignore.case = TRUE)
     # extract the text of the matches
     # ext is a list (length = nrow(dat_pn))
     # each element is a character vector (length = number of matches)
-    ext <- regmatches(dat_pn[, varname_pn], loc)
+    ext <- regmatches(dat_pn[[varname_pn]], loc)
   })
 
 	# the total number of matches found (might be several per progress note)
@@ -55,11 +63,11 @@ extract <- function(
 	    if (l <- length(ext[[i]])) { # if any matches in record i, then
 	      # copy the l instances to the new vectors
 	      repl <- seq.int(j+1, j+l)
-	      csn  [repl] <- dat_pn$PAT_ENC_CSN_ID[i]
+	      csn  [repl] <- dat_pn[[varname_enc_id]][i]
 	      line [repl] <- seq.int(l) # 1..l to differentiate
-	      id   [repl] <- dat_pn$PAT_ID[i]
-	      mrn  [repl] <- dat_pn$PAT_MRN[i]
-	      date [repl] <- dat_pn$CONTACT_DATE[i]
+	      id   [repl] <- dat_pn[[varname_pat_id]][i]
+	      mrn  [repl] <- dat_pn[[varname_pat_mrn]][i]
+	      date [repl] <- dat_pn[[varname_date]][i]
 	      found[repl] <- ext[[i]] # ext[[i]] is a vector of length l
 	      pos  [repl] <- loc[[i]] # loc[[i]] is a vector of length l
 	      j <- j + l # advance counter by number of matches in this record
@@ -102,15 +110,18 @@ extract <- function(
 
 #system.time(dat_wo <- extract(pat="\\bw/o\\b", filebase=NULL))
 
-
 #' Extract matching text from progress notes; multiple patterns allowed
 #'
 #' @param pats vector of regular expressions for which to search
 #' @param dat_pn data.table or data.frame containing clinic visit notes
 #' @param varname_pn name of variable in dat_pn containing the progress note.  Default is "PROGRESS_NOTE".
+#' @param varname_enc_id name of variable in dat_pn containing the progress note.  Default is "PAT_ENC_CSN_ID".
+#' @param varname_pat_id name of variable in dat_pn containing the progress note.  Default is "PAT_ID".
+#' @param varname_pat_mrn name of variable in dat_pn containing the progress note.  Default is "PAT_MRN".
+#' @param varname_date name of variable in dat_pn containing the progress note.  Default is "CONTACT_DATE".
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
-#' @return data.frame or data.table (invisibly) with seven columns containing all text matching pattern pat, the position of the matches within the progress note and the associated data for that progress note (encounter, mrn, and id tokens; date)
+#' @return data.frame (invisibly) with seven columns containing all text matching pattern pat, the position of the matches within the progress note and the associated data for that progress note (encounter, mrn, and id tokens; date). The variable names of the output are always "PAT_ENC_CSN_ID", "PAT_ID", "PAT_MRN", "CONTACT_DATE", "MATCHED_TEXT", "POSITION", and "LINE", regardless of the input variable names.
 #' @export
 #'
 #' @examples
@@ -126,12 +137,16 @@ extract <- function(
 #'     "x[ -]*linked[ -]*(RP|retinitis([ -]*pigmentosa)?)"),
 #'   dat_pn))
 #' table(dat_ext$MATCHED_TEXT)
-
 extracts <- function(
     pats,
     dat_pn,
     varname_pn = "PROGRESS_NOTE",
+    varname_enc_id = "PAT_ENC_CSN_ID",
+    varname_pat_id = "PAT_ID",
+    varname_pat_mrn = "PAT_MRN",
+    varname_date = "CONTACT_DATE",
     verbose = 0) {
+
   # number of patterns
 	npat <- length(pats)
 
@@ -149,6 +164,10 @@ extracts <- function(
 	        pat,
 	        dat_pn = dat_pn,
 	        varname_pn = varname_pn,
+	        varname_enc_id = varname_enc_id,
+	        varname_pat_id = varname_pat_id,
+	        varname_pat_mrn = varname_pat_mrn,
+	        varname_date = varname_date,
 	        verbose = verbose))
 
 	  # combine to single data.frame

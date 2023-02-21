@@ -4,7 +4,16 @@
 \alias{extracts}
 \title{Extract matching text from progress notes; multiple patterns allowed}
 \usage{
-extracts(pats, dat_pn, varname_pn = "PROGRESS_NOTE", verbose = 0)
+extracts(
+  pats,
+  dat_pn,
+  varname_pn = "PROGRESS_NOTE",
+  varname_enc_id = "PAT_ENC_CSN_ID",
+  varname_pat_id = "PAT_ID",
+  varname_pat_mrn = "PAT_MRN",
+  varname_date = "CONTACT_DATE",
+  verbose = 0
+)
 }
 \arguments{
 \item{pats}{vector of regular expressions for which to search}
@@ -13,10 +22,18 @@ extracts(pats, dat_pn, varname_pn = "PROGRESS_NOTE", verbose = 0)
 
 \item{varname_pn}{name of variable in dat_pn containing the progress note.  Default is "PROGRESS_NOTE".}
 
+\item{varname_enc_id}{name of variable in dat_pn containing the progress note.  Default is "PAT_ENC_CSN_ID".}
+
+\item{varname_pat_id}{name of variable in dat_pn containing the progress note.  Default is "PAT_ID".}
+
+\item{varname_pat_mrn}{name of variable in dat_pn containing the progress note.  Default is "PAT_MRN".}
+
+\item{varname_date}{name of variable in dat_pn containing the progress note.  Default is "CONTACT_DATE".}
+
 \item{verbose}{Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.}
 }
 \value{
-data.frame or data.table (invisibly) with seven columns containing all text matching pattern pat, the position of the matches within the progress note and the associated data for that progress note (encounter, mrn, and id tokens; date)
+data.frame (invisibly) with seven columns containing all text matching pattern pat, the position of the matches within the progress note and the associated data for that progress note (encounter, mrn, and id tokens; date). The variable names of the output are always "PAT_ENC_CSN_ID", "PAT_ID", "PAT_MRN", "CONTACT_DATE", "MATCHED_TEXT", "POSITION", and "LINE", regardless of the input variable names.
 }
 \description{
 Extract matching text from progress notes; multiple patterns allowed
