@@ -7,14 +7,14 @@
 findstringboundaries(dat_pn, varname_pn = "PROGRESS_NOTE", verbose = 0)
 }
 \arguments{
-\item{dat_pn}{data.frame ENC_VISIT}
+\item{dat_pn}{data.frame Usually the output from loadprogressnote(). Generally the data stored in an ENC_VISIT file.}
 
-\item{varname_pn}{variable name for PROGRESS_NOTE}
+\item{varname_pn}{variable name in dat_pn that contains the PROGRESS_NOTE. Default value is "PROGRESS_NOTE".}
 
 \item{verbose}{Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.}
 }
 \value{
-data.frame with locations of sentence boundaries
+(invisible) list of length nrow(dat_pn). Each element is an integer matrix with two columns ('start', and 'end') containing locations of sentence boundaries (one row for each sentence).
 }
 \description{
 Find sentence boundaries

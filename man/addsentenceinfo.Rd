@@ -22,7 +22,7 @@ addsentenceinfo(
 
 \item{varname_pn}{name of PROGRESS_NOTE in dat_pn}
 
-\item{varname_enc}{variable name of encounter variable}
+\item{varname_enc}{variable name of encounter variable in dat_pn}
 
 \item{verbose}{Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.}
 }

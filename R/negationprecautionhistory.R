@@ -139,11 +139,11 @@ findhistory <- function(
 
 #' Find sentence boundaries
 #'
-#' @param dat_pn data.frame ENC_VISIT
-#' @param varname_pn variable name for PROGRESS_NOTE
+#' @param dat_pn data.frame Usually the output from loadprogressnote(). Generally the data stored in an ENC_VISIT file.
+#' @param varname_pn variable name in dat_pn that contains the PROGRESS_NOTE. Default value is "PROGRESS_NOTE".
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
-#' @return data.frame with locations of sentence boundaries
+#' @return (invisible) list of length nrow(dat_pn). Each element is an integer matrix with two columns ('start', and 'end') containing locations of sentence boundaries (one row for each sentence).
 #' @export
 findstringboundaries <- function(
     dat_pn,
@@ -152,12 +152,14 @@ findstringboundaries <- function(
 
   stime <- system.time(
     sent_bound <- stringi::stri_locate_all_boundaries(
-      dat_pn[, varname_pn],
-      type="sentence"))
+      dat_pn[[varname_pn]],
+      type = "sentence"))
 
-  if (verbose > 0) cat("Boundary time", stime[1:3], "\n")
+  if (verbose > 0) cat("Boundary finding time", stime[1:3], "\n")
 
-  return(sent_bound)
+  if (verbose > 1) print(utils::head(sent_bound))
+
+  return(invisible(sent_bound))
 }
 
 #' Add sentence information to each instance of found keyword
@@ -166,7 +168,7 @@ findstringboundaries <- function(
 #' @param sent_bound data.frame containing sentence boundaries
 #' @param dat_pn data.frame ENC_VISIT containing progress notes
 #' @param varname_pn name of PROGRESS_NOTE in dat_pn
-#' @param varname_enc variable name of encounter variable
+#' @param varname_enc variable name of encounter variable in dat_pn
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #'
 #' @return data.frame. Same as dat_key but with additional columns
@@ -182,24 +184,26 @@ addsentenceinfo <- function(
     varname_enc = "PAT_ENC_CSN_ID",
     verbose = 0) {
 
-  idx_key <- match(dat_key[, varname_enc], dat_pn[, varname_enc])
+  idx_key <- match(
+    dat_key[["PAT_ENC_CSN_ID"]], # encounter variable named in extract() is "PAT_ENC_CSN_ID"
+    dat_pn[[varname_enc]]) # encounter variable in dat_pn may be supplied by user
 
   # extra variables to add to dat_key
-  dat_key$SENTENCE_START <- NA_integer_
-  dat_key$SENTENCE_END <- NA_integer_
-  dat_key$SENTENCE <- NA_character_
+  dat_key[["SENTENCE_START"]] <- NA_integer_
+  dat_key[["SENTENCE_END"]] <- NA_integer_
+  dat_key[["SENTENCE"]] <- NA_character_
 
   for (i in seq_along(idx_key)) {
     # extract sentence from dat_pn$PROGRESS_NOTE containing key word
     these_sent <- stringi::stri_sub(
-      dat_pn[, varname_pn][idx_key[i]],
+      dat_pn[[varname_pn]][idx_key[i]],
       from = sent_bound[[idx_key[i]]])
     which_sent <- findInterval(
-      dat_key$POSITION[i],
+      dat_key[["POSITION"]][i],
       sent_bound[[idx_key[i]]][, 1])
-    dat_key$SENTENCE[i] <- these_sent[which_sent]
-    dat_key$SENTENCE_START[i] <- sent_bound[[idx_key[i]]][which_sent, 1]
-    dat_key$SENTENCE_END[i]   <- sent_bound[[idx_key[i]]][which_sent, 2]
+    dat_key[["SENTENCE"]][i] <- these_sent[which_sent]
+    dat_key[["SENTENCE_START"]][i] <- sent_bound[[idx_key[i]]][which_sent, 1]
+    dat_key[["SENTENCE_END"]][i]   <- sent_bound[[idx_key[i]]][which_sent, 2]
   }
 
   return(invisible(dat_key))
