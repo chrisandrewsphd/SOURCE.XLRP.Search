@@ -53,7 +53,7 @@ loadprogressnotes <- function(
       cat(sprintf("%s is not a variable name in %s\nUniqueness check skipped.\n", varname_enc_id, filename))
     }
   } else {
-    if (anyDuplicated(dat[, varname_enc_id])) {
+    if (anyDuplicated(dat[[varname_enc_id]])) {
       if (verbose > 0) cat("Non-unique encounter record ids.\n")
     } # ==0, all distinct encounter records
   }
