@@ -21,7 +21,7 @@ loadprogressnotes(
 
 \item{usefread}{If TRUE (default), use data.table::fread. If FALSE, use utils::read.csv.}
 
-\item{nrows}{Number of rows to read from file.  Default (-1) is to read all rows.  Consider positive values for testing.}
+\item{nrows}{Number of rows to read from file.  Default (NULL) is to read all rows.  Consider positive values for testing.}
 }
 \value{
 A data.table (fread == TRUE) or data.frame (fread == FALSE), invisibly.

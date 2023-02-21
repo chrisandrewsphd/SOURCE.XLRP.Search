@@ -4,7 +4,7 @@
 #' @param varname_enc_id Name of the encounter id variable filename.  At UM this is "PAT_ENC_CSN_ID" (which is the default if nothing else is provided).
 #' @param verbose Controls the amount of output to the console. The default, 0, prints nothing.  Higher values provide more detail.
 #' @param usefread If TRUE (default), use data.table::fread. If FALSE, use utils::read.csv.
-#' @param nrows Number of rows to read from file.  Default (-1) is to read all rows.  Consider positive values for testing.
+#' @param nrows Number of rows to read from file.  Default (NULL) is to read all rows.  Consider positive values for testing.
 #'
 #' @return A data.table (fread == TRUE) or data.frame (fread == FALSE), invisibly.
 #' @export
